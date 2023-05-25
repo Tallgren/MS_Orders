@@ -22,9 +22,7 @@ public class OrdersController {
 
     @Value("${user-service.url}")
     private String userServiceBaseUrl;
-
     private final OrderRepository orderRepo;
-
     public OrdersController(OrderRepository orderRepo) {
         this.orderRepo = orderRepo;
     }
