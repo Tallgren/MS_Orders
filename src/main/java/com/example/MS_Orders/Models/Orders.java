@@ -19,13 +19,8 @@ public class Orders {
     @GeneratedValue
     protected Long id;
     protected Date date;
-
-    @ManyToOne
-    @JoinColumn
-    protected Customer customer;
-
-    @ManyToMany(fetch = FetchType.EAGER)
-    protected List<Product> products;
+    protected Long customer_id;
+    protected Long product_id;
 
     public String getFormattedDate(Date date) {
         SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");

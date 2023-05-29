@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 @RestController
@@ -19,7 +20,6 @@ public class OrdersController {
     @Autowired
     private RestTemplate restTemplate;
 
-
     @Value("${user-service.url}")
     private String userServiceBaseUrl;
     private final OrderRepository orderRepo;
@@ -27,14 +27,13 @@ public class OrdersController {
         this.orderRepo = orderRepo;
     }
 
-    @GetMapping(path = "/demo")
+    @GetMapping(path = "/demo/randomCustomer")
     public @ResponseBody Customer getRandomCustomer() {
-        String userResourceUrl = userServiceBaseUrl + "customers/all";
-        // Error handling and null check is missing in this example
+        //Hämta lista på alla customers
+        String userResourceUrl = userServiceBaseUrl + "customer/all";
         Customer[] customers = restTemplate.getForObject(userResourceUrl, Customer[].class);
         int randomCustomer = new Random().nextInt(customers.length);
-        Customer winner = customers[randomCustomer];
-        return winner;
+        return customers[randomCustomer];
     }
 
     @RequestMapping("/all")
