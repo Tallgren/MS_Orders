@@ -1,0 +1,61 @@
+version: "3.9"
+
+networks:
+  my-network:
+    driver: bridge
+
+services:
+  webshopdatabase:
+    image: ghcr.io/petertalling/webshopdatabase:latest
+    container_name: my-webshopdatabase
+    networks:
+      - my-network
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      interval: 20s
+      timeout: 30s
+        
+  webshopcustomer:
+    image: ghcr.io/petertalling/ms_customer:latest
+    container_name: my-ms_customer
+    ports:
+      - "9090:8080"
+    environment:
+      DB_PASSWORD: ${DB_PASSWORD}
+      MYSQL_HOST: webshopdatabase
+    networks:
+      - my-network
+    depends_on:
+      webshopdatabase:
+        condition: service_healthy
+        
+  webshopproduct:
+    image: ghcr.io/lemoniapd/ms_product:latest
+    container_name: my-ms_product
+    ports:
+      - "9091:8080"
+    environment:
+      DB_PASSWORD: ${DB_PASSWORD}
+      MYSQL_HOST: webshopdatabase
+    networks:
+      - my-network
+    depends_on:
+      webshopdatabase:
+        condition: service_healthy
+  
+  webshoporders:
+    image: ghcr.io/petertalling/ms_orders:latest
+    container_name: my-ms_orders
+    ports:
+      - "9092:8080"
+    environment:
+      USER_SERVICE_URL: http://webshopcustomer:8080/
+      DB_PASSWORD: ${DB_PASSWORD}
+      MYSQL_HOST: webshopdatabase
+    networks:
+      - my-network
+    depends_on:
+      webshopdatabase:
+        condition: service_healthy
