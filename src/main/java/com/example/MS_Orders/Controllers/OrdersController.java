@@ -8,6 +8,9 @@ import jakarta.validation.constraints.Min;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -16,6 +19,7 @@ import java.util.Objects;
 import java.util.Random;
 
 @RestController
+@Validated
 @RequestMapping("/orders")
 public class OrdersController {
 
@@ -45,8 +49,14 @@ public class OrdersController {
 
 
     @RequestMapping("/orderById/{id}")
-    public Orders getOrderById(@PathVariable Long id) {
-
+    public Orders getOrderById(@PathVariable @Min(1) Long id) {
         return orderRepo.findById(id).orElse(null);
     }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    ResponseEntity<String> handleConstraintViolationException(ConstraintViolationException e) {
+        return new ResponseEntity<>("not a valid order-id: " + e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+    
 }
