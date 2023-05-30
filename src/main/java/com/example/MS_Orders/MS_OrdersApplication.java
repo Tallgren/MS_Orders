@@ -18,4 +18,5 @@ public class MS_OrdersApplication {
         RestTemplate restTemplate = new RestTemplate();
         return restTemplate;
     }
+
 }
