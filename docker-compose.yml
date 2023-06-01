@@ -32,7 +32,7 @@ services:
         condition: service_healthy
         
   webshopproduct:
-    image: ghcr.io/lemoniapd/ms_product:latest
+    image: ghcr.io/lisapel/ms_product:latest
     container_name: my-ms_product
     ports:
       - "9091:8080"

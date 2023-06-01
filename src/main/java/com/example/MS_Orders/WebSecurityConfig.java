@@ -22,7 +22,7 @@ public class WebSecurityConfig {
                                 DispatcherType.ERROR).permitAll()
                         .requestMatchers("/orders/**").hasRole("ADMIN")
                         .requestMatchers("/admin").hasRole("ADMIN"))
-                .formLogin(Customizer.withDefaults());
+                .httpBasic(Customizer.withDefaults());
         return http.build();
     }
 
